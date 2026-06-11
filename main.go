@@ -14,7 +14,7 @@ type Buku struct {
 	Stok     int
 }
 
-// Type anggota berisi data untuk menampung
+// Type anggota berisi data untuk menampung anggota  berdasar IDAnggota, Nama, Kelas
 
 type Anggota struct {
 	IDAnggota int
