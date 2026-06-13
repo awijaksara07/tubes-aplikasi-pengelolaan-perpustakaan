@@ -14,14 +14,14 @@ type Buku struct {
 	Stok     int
 }
 
-// Type anggota berisi data untuk menampung anggota  berdasar IDAnggota, Nama, Kelas
-
+// Type anggota berisi data untuk menampung IDAnggota, Nama, Kelas
 type Anggota struct {
 	IDAnggota int
 	Nama      string
 	Kelas     string
 }
 
+// Type Peminjaman berisi data untuk menampung IDPinjam, IDAnggota, IDBuku, LamaHari
 type Peminjaman struct {
 	IDPinjam  int
 	IDAnggota int
@@ -38,6 +38,7 @@ func greetings() {
 	fmt.Println("|      SELAMAT DATANG DI SISTEM PERPUSTAKAAN DIGITAL      |")
 	fmt.Println("===========================================================")
 }
+
 
 func isiDummyBuku(A *tabBuku, n *int) {
 	A[0] = Buku{1, "Informatika", "Algoritma", "Rinaldi", 2022, 5}
@@ -108,6 +109,7 @@ func menuBuku() {
 	fmt.Println("| 4. Hapus Data Buku Dari Sistem                  |")
 	fmt.Println("| 5. Pencarian Data Buku (Searching)              |")
 	fmt.Println("| 6. Pengurutan Data Buku (Sorting)               |")
+	fmt.Println("| 7. Tampilkan stok Terbanyak/Terkecil            |")
 	fmt.Println("| 0. Kembali ke Menu Utama                        |")
 	fmt.Println("===================================================")
 }
@@ -134,12 +136,96 @@ func menuManajemenBuku(A *tabBuku, n *int) {
 			menuCariBuku(A, *n)
 		case 6:
 			menuUrutBuku(A, *n)
+		case 7:
+			pilihanStok(*A, *n)
 		case 0:
 			fmt.Println("Kembali ke menu utama...")
 		default:
 			fmt.Println("Pilihan tidak valid")
 		}
 	}
+}
+
+func pilihanStok(A tabBuku, n int) {
+	var pilihan int
+	var terbesar bool
+
+	if isEmpty(n){
+		fmt.Println("Data buku kosong. Silakan isi terlebih dahulu.")
+	}else{
+		fmt.Println("\n======================================")
+		fmt.Println("| 1. Tampilkan Stok Buku Terbesar    |")
+		fmt.Println("| 2. Tampilkan Stok Buku Terkecil    |")
+		fmt.Println("======================================")
+
+		fmt.Print("Pilihan: ")
+		fmt.Scan(&pilihan)
+
+		terbesar = pilihan == 1
+
+		cariStokTerbesarTerkecil(A, n, terbesar)
+	}
+	
+}
+
+func cariStokTerbesarTerkecil(A tabBuku, n int, terbesar bool){
+	var idx, i  int
+	var status string
+
+	idx = 0
+
+	if terbesar{
+		for i = 1; i<n; i++ {
+			if A[i].Stok > A[idx].Stok{
+				idx = i
+			}
+		}
+
+		if A[idx].Stok == 0 {
+			status = "Habis"
+		} else if A[idx].Stok <= 2 {
+			status = "Menipis"
+		} else {
+			status = "Tersedia"
+		}
+
+		fmt.Println("\nStok Buku Terbesar:")
+		fmt.Println("------------------------------------")
+		fmt.Println("ID Buku    :", A[idx].ID)
+		fmt.Println("Kategori   :", A[idx].Kategori)
+		fmt.Println("Judul Buku :", A[idx].Judul)
+		fmt.Println("Penulis    :", A[idx].Penulis)
+		fmt.Println("Tahun      :", A[idx].Tahun)
+		fmt.Println("Stok       :", A[idx].Stok)
+		fmt.Println("Status     :", status)
+		fmt.Println("------------------------------------")
+	}else{
+		for i = 1; i<n; i++ {
+			if A[i].Stok < A[idx].Stok{
+				idx = i
+			}
+		}
+
+		if A[idx].Stok == 0 {
+			status = "Habis"
+		} else if A[idx].Stok <= 2 {
+			status = "Menipis"
+		} else {
+			status = "Tersedia"
+		}
+
+		fmt.Println("\nStok Buku Terkecil:")
+		fmt.Println("------------------------------------")
+		fmt.Println("ID Buku    :", A[idx].ID)
+		fmt.Println("Kategori   :", A[idx].Kategori)
+		fmt.Println("Judul Buku :", A[idx].Judul)
+		fmt.Println("Penulis    :", A[idx].Penulis)
+		fmt.Println("Tahun      :", A[idx].Tahun)
+		fmt.Println("Stok       :", A[idx].Stok)
+		fmt.Println("Status     :", status)
+		fmt.Println("------------------------------------")
+	}
+
 }
 
 func binarySearchBukuByID(A tabBuku, n int, id int) int {
