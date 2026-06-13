@@ -2,9 +2,10 @@ package main
 
 import "fmt"
 
+// const NMAX menyimpan kapasitas maksimum 100 data yang dapat disimpan
 const NMAX int = 100
 
-// Type Buku berisi data untuk menampung buku berdasar ID, Kategori, Judul, Penulis, Tahun
+// Type Buku berisi data buku berupa ID, kategori, judul, penulis, tahun terbit, dan stok
 type Buku struct {
 	ID       int
 	Kategori string
@@ -14,14 +15,14 @@ type Buku struct {
 	Stok     int
 }
 
-// Type anggota berisi data untuk menampung IDAnggota, Nama, Kelas
+// Type Anggota berisi data anggota perpustakaan berupa ID anggota, nama, dan kelas
 type Anggota struct {
 	IDAnggota int
 	Nama      string
 	Kelas     string
 }
 
-// Type Peminjaman berisi data untuk menampung IDPinjam, IDAnggota, IDBuku, LamaHari
+// Type Peminjaman berisi data transaksi peminjaman berupa ID pinjam, ID anggota, ID buku, dan lama hari peminjaman
 type Peminjaman struct {
 	IDPinjam  int
 	IDAnggota int
@@ -29,11 +30,20 @@ type Peminjaman struct {
 	LamaHari  int
 }
 
+// type tabBuku merupakan array yang digunakan untuk menyimpan data buku sebanyak NMAX elemen
 type tabBuku [NMAX]Buku
+
+// type tabAnggota merupakan array yang digunakan untuk menyimpan data anggota sebanyak NMAX elemen
 type tabAnggota [NMAX]Anggota
+
+// Type tabPeminjaman merupakan array yang digunakan untuk menyimpan data peminjaman sebanyak NMAX elemen
 type tabPeminjaman [NMAX]Peminjaman
 
 func greetings() {
+	/*
+	IS. Program mulai dijalankan dan belum menampilkan pesan sambutan.
+	FS. Pesan selamat datang sistem perpustakaan digital ditampilkan ke layar.
+	*/
 	fmt.Println("\n===========================================================")
 	fmt.Println("|      SELAMAT DATANG DI SISTEM PERPUSTAKAAN DIGITAL      |")
 	fmt.Println("===========================================================")
@@ -50,7 +60,21 @@ func isiDummyBuku(A *tabBuku, n *int) {
 	*n = 5
 }
 
+func isiDummyAnggota(A *tabAnggota, n *int) {
+	A[0] = Anggota{1, "Andi", "IF-46-01"}
+	A[1] = Anggota{2, "Budi", "IF-46-02"}
+	A[2] = Anggota{3, "Citra", "SE-46-01"}
+	A[3] = Anggota{4, "Dewi", "DS-46-01"}
+	A[4] = Anggota{5, "Eko", "IF-46-03"}
+
+	*n = 5
+}
+
 func main() {
+	/*
+	IS. Program belum dijalankan dan seluruh data masih kosong.
+	FS. Program berhenti ketika pengguna memilih menu keluar.
+	*/
 	var dataBuku tabBuku
 	var dataAnggota tabAnggota
 	var dataPinjam tabPeminjaman
@@ -61,7 +85,9 @@ func main() {
 	pilihan = -1
 	greetings()
 
-	isiDummyBuku(&dataBuku, &nBuku)
+	isiDummyBuku(&dataBuku, &nBuku) //jika ingin testing menggunakkan data dummy
+	isiDummyAnggota(&dataAnggota, &nAnggota) //jika ingin testing menggunakkan data dummy
+
 	for pilihan != 0 {
 		menuUtama()
 		fmt.Print("Pilihan: ")
@@ -86,7 +112,8 @@ func main() {
 
 func menuUtama() {
 	/*
-	IS.
+	IS. Pengguna berada pada halaman utama sistem.
+	FS. Menu utama ditampilkan ke layar sehingga pengguna dapat memilih fitur yang tersedia.
 	*/
 	fmt.Println("\n===================================================")
 	fmt.Println("|                   MENU UTAMA                    |")
@@ -100,6 +127,10 @@ func menuUtama() {
 }
 
 func menuBuku() {
+	/*
+	IS. Pengguna memilih fitur manajemen buku.
+	FS. Menu manajemen buku ditampilkan ke layar.
+	*/
 	fmt.Println("\n===================================================")
 	fmt.Println("|                  MANAJEMEN BUKU                 |")
 	fmt.Println("===================================================")
@@ -115,6 +146,10 @@ func menuBuku() {
 }
 
 func menuManajemenBuku(A *tabBuku, n *int) {
+	/*
+	IS. Menerima array buku A dan jumlah data n yang mungkin kosong maupun berisi data.
+	FS. Pengguna dapat menjalankan operasi manajemen buku hingga memilih kembali ke menu utama.
+	*/
 	var pilihan int
 	pilihan = -1
 
@@ -147,8 +182,11 @@ func menuManajemenBuku(A *tabBuku, n *int) {
 }
 
 func pilihanStok(A tabBuku, n int) {
+	/*
+	IS. Menerima array buku A dan jumlah data n.
+	FS. Buku dengan stok terbesar atau terkecil ditampilkan sesuai pilihan pengguna.*/
+
 	var pilihan int
-	var terbesar bool
 
 	if isEmpty(n){
 		fmt.Println("Data buku kosong. Silakan isi terlebih dahulu.")
@@ -161,14 +199,23 @@ func pilihanStok(A tabBuku, n int) {
 		fmt.Print("Pilihan: ")
 		fmt.Scan(&pilihan)
 
-		terbesar = pilihan == 1
+		if pilihan == 1 {
+			cariStokTerbesarTerkecil(A, n, true)
+		} else if pilihan == 2 {
+			cariStokTerbesarTerkecil(A, n, false)
+		} else {
+			fmt.Println("Pilihan tidak valid.")
+		}
 
-		cariStokTerbesarTerkecil(A, n, terbesar)
 	}
 	
 }
 
 func cariStokTerbesarTerkecil(A tabBuku, n int, terbesar bool){
+	/*
+	IS.A berisi data buku dan n menyatakan banyaknya data.
+	FS.Buku dengan stok terbesar atau terkecil ditampilkan ke layar.
+	*/
 	var idx, i  int
 	var status string
 
@@ -229,6 +276,11 @@ func cariStokTerbesarTerkecil(A tabBuku, n int, terbesar bool){
 }
 
 func binarySearchBukuByID(A tabBuku, n int, id int) int {
+	/*
+	Function menerima array buku A, banyak data n, dan ID buku yang dicari.
+	Mengembalikan indeks buku jika ditemukan, atau -1 jika tidak ditemukan.
+	*/
+
 	var left, right, mid, idx int
 
 	idx = -1
@@ -248,6 +300,11 @@ func binarySearchBukuByID(A tabBuku, n int, id int) int {
 }
 
 func binarySearchAnggotaByID(A tabAnggota, n int, id int) int {
+	/*
+	Function menerima array anggota A, banyak data n, dan ID anggota yang dicari.
+	Mengembalikan indeks anggota jika ditemukan, atau -1 jika tidak ditemukan.
+	*/
+
 	var left, right, mid, idx int
 
 	idx = -1
@@ -267,6 +324,11 @@ func binarySearchAnggotaByID(A tabAnggota, n int, id int) int {
 }
 
 func binarySearchPinjamByID(P tabPeminjaman, n int, id int) int {
+	/*
+	Function menerima array peminjaman P, banyak data n, dan ID transaksi yang dicari.
+	Mengembalikan indeks transaksi jika ditemukan, atau -1 jika tidak ditemukan.
+	*/
+
 	var left, right, mid, idx int
 
 	idx = -1
@@ -286,6 +348,11 @@ func binarySearchPinjamByID(P tabPeminjaman, n int, id int) int {
 }
 
 func idBukuTerakhir(A tabBuku, n int) int {
+	/*
+	Function menerima array buku A dan banyak data n.
+	Mengembalikan ID buku terakhir yang tersimpan.
+	*/
+
 	if n == 0 {
 		return 0
 	}
@@ -293,6 +360,11 @@ func idBukuTerakhir(A tabBuku, n int) int {
 }
 
 func idAnggotaTerakhir(A tabAnggota, n int) int {
+	/*
+	Function menerima array anggota A dan banyak data n.
+	Mengembalikan ID anggota terakhir yang tersimpan.
+	*/
+
 	if n == 0 {
 		return 0
 	}
@@ -300,6 +372,11 @@ func idAnggotaTerakhir(A tabAnggota, n int) int {
 }
 
 func idPinjamTerakhir(P tabPeminjaman, n int) int {
+	/*
+	Function menerima array peminjaman P dan banyak data n.
+	Mengembalikan ID transaksi terakhir yang tersimpan.
+	*/
+
 	if n == 0 {
 		return 0
 	}
@@ -307,6 +384,10 @@ func idPinjamTerakhir(P tabPeminjaman, n int) int {
 }
 
 func tambahBuku(A *tabBuku, n *int) {
+	/*
+	IS. A berisi data buku dan n menyatakan banyaknya data.
+	FS. Data buku baru ditambahkan ke dalam array A dan n diperbarui.
+	*/
 	var banyak, i int
 
 	if isFull(*n) {
@@ -316,39 +397,62 @@ func tambahBuku(A *tabBuku, n *int) {
 		fmt.Print("Berapa buku yang ingin ditambah: ")
 		fmt.Scan(&banyak)
 
-		if banyak > NMAX-*n {
-			banyak = NMAX - *n
-			fmt.Println("Jumlah disesuaikan ke batas maksimal slot yang tersedia.")
+		if banyak <= 0 {
+			fmt.Println("Jumlah buku harus lebih dari 0.")
+		} else {
+
+			if banyak > NMAX-*n {
+				banyak = NMAX - *n
+				fmt.Println("Jumlah disesuaikan ke batas maksimal slot yang tersedia.")
+			}
+
+			for i = 0; i < banyak; i++ {
+				fmt.Printf("\n===== INPUT BUKU KE-%d =====\n", i+1)
+
+				A[*n].ID = idBukuTerakhir(*A, *n) + 1
+				fmt.Println("ID Buku (Otomatis) :", A[*n].ID)
+
+				fmt.Print("Judul Buku         : ")
+				fmt.Scan(&A[*n].Judul)
+
+				fmt.Print("Kategori Buku      : ")
+				fmt.Scan(&A[*n].Kategori)
+
+				fmt.Print("Penulis Buku       : ")
+				fmt.Scan(&A[*n].Penulis)
+
+				fmt.Print("Tahun Terbit       : ")
+				fmt.Scan(&A[*n].Tahun)
+
+				for A[*n].Tahun < 0 {
+					fmt.Println("Tahun tidak valid.")
+					fmt.Print("Masukkan ulang tahun: ")
+					fmt.Scan(&A[*n].Tahun)
+				}
+
+				fmt.Print("Jumlah Stok Buku   : ")
+				fmt.Scan(&A[*n].Stok)
+
+				for A[*n].Stok < 0 {
+					fmt.Println("Stok tidak boleh negatif.")
+					fmt.Print("Masukkan ulang stok: ")
+					fmt.Scan(&A[*n].Stok)
+				}
+
+				*n++
+			}
+
+			fmt.Println("\nData berhasil ditambahkan ke dalam sistem.")
 		}
-
-		for i = 0; i < banyak; i++ {
-			fmt.Printf("\n===== INPUT BUKU KE-%d =====\n", i+1)
-
-			A[*n].ID = idBukuTerakhir(*A, *n) + 1
-			fmt.Println("ID Buku (Otomatis) :", A[*n].ID)
-
-			fmt.Print("Judul Buku         : ")
-			fmt.Scan(&A[*n].Judul)
-
-			fmt.Print("Kategori Buku      : ")
-			fmt.Scan(&A[*n].Kategori)
-
-			fmt.Print("Penulis Buku       : ")
-			fmt.Scan(&A[*n].Penulis)
-
-			fmt.Print("Tahun Terbit       : ")
-			fmt.Scan(&A[*n].Tahun)
-
-			fmt.Print("Jumlah Stok Buku   : ")
-			fmt.Scan(&A[*n].Stok)
-
-			*n++
-		}
-		fmt.Println("\nData berhasil ditambahkan ke dalam sistem.")
 	}
 }
 
 func cetakDataBuku(A tabBuku, n int) {
+	/*
+	IS. A berisi data buku dan n menyatakan banyaknya data.
+	FS. Seluruh data buku ditampilkan ke layar.
+	*/
+
 	var i int
 	var status string
 
@@ -374,6 +478,11 @@ func cetakDataBuku(A tabBuku, n int) {
 }
 
 func ubahBuku(A *tabBuku, n int) {
+	/*
+	IS. A berisi data buku dan n menyatakan banyaknya data.
+	FS. Data buku dengan ID yang dipilih diperbarui.
+	*/
+
 	var id, idx int
 
 	if isEmpty(n) {
@@ -399,9 +508,19 @@ func ubahBuku(A *tabBuku, n int) {
 
 			fmt.Print("Tahun Baru   : ")
 			fmt.Scan(&A[idx].Tahun)
+			for A[idx].Tahun < 0 {
+				fmt.Println("Tahun tidak valid.")
+				fmt.Print("Masukkan ulang tahun: ")
+				fmt.Scan(&A[idx].Tahun)
+			}
 
 			fmt.Print("Stok Baru    : ")
 			fmt.Scan(&A[idx].Stok)
+			for A[idx].Stok < 0 {
+				fmt.Println("Stok tidak boleh negatif.")
+				fmt.Print("Masukkan ulang stok: ")
+				fmt.Scan(&A[idx].Stok)
+			}
 
 			fmt.Println("\nData buku berhasil diperbarui.")
 		}
@@ -409,6 +528,11 @@ func ubahBuku(A *tabBuku, n int) {
 }
 
 func hapusBuku(A *tabBuku, n *int) {
+	/*
+	IS. A berisi data buku dan n menyatakan banyaknya data.
+	FS. Data buku dengan ID yang dipilih dihapus dari array.
+	*/
+
 	var id, idx, i int
 
 	if isEmpty(*n) {
@@ -432,6 +556,11 @@ func hapusBuku(A *tabBuku, n *int) {
 }
 
 func menuCariBuku(A *tabBuku, n int) {
+	/*
+	IS. A berisi data buku dan n menyatakan banyaknya data.
+	FS. Hasil pencarian buku ditampilkan sesuai pilihan pengguna.
+	*/
+
 	var pilihan, kriteriaInt, hasil int
 	var kriteriaString string
 
@@ -466,6 +595,11 @@ func menuCariBuku(A *tabBuku, n int) {
 }
 
 func cetakHasilCariBuku(A tabBuku, idx int) {
+	/*
+	IS. A berisi data buku dan idx merupakan indeks hasil pencarian.
+	FS. Data buku yang ditemukan ditampilkan ke layar.
+	*/
+
 	var status string
 	if idx == -1 {
 		fmt.Println("Data yang dicari tidak ditemukan.")
@@ -491,6 +625,11 @@ func cetakHasilCariBuku(A tabBuku, idx int) {
 }
 
 func menuUrutBuku(A *tabBuku, n int) {
+	/*
+	IS. A berisi data buku dan n menyatakan banyaknya data.
+	FS. Data buku ditampilkan dalam urutan sesuai kriteria yang dipilih.
+	*/
+
 	var pilKriteria, pilAlgoritma, pilArah int
 	var asc bool
 	var temp tabBuku
@@ -549,6 +688,11 @@ func menuUrutBuku(A *tabBuku, n int) {
 }
 
 func menuAnggota() {
+	/*
+	IS. Pengguna berada pada menu manajemen anggota.
+	FS. Menu manajemen anggota ditampilkan ke layar.
+	*/
+
 	fmt.Println("\n===================================================")
 	fmt.Println("|                MANAJEMEN ANGGOTA                |")
 	fmt.Println("===================================================")
@@ -561,6 +705,11 @@ func menuAnggota() {
 }
 
 func menuManajemenAnggota(A *tabAnggota, n *int) {
+	/*
+	IS. A berisi data anggota dan n menyatakan banyaknya data.
+	FS. Pengguna dapat melakukan operasi manajemen anggota.
+	*/
+
 	var pilihan int
 	pilihan = -1
 
@@ -587,6 +736,11 @@ func menuManajemenAnggota(A *tabAnggota, n *int) {
 }
 
 func tambahAnggota(A *tabAnggota, n *int) {
+	/*
+	IS. A berisi data anggota dan n menyatakan banyaknya data.
+	FS. Data anggota baru ditambahkan ke dalam array.
+	*/
+
 	if isFull(*n) {
 		fmt.Println("Kapasitas database anggota penuh.")
 	} else {
@@ -606,6 +760,11 @@ func tambahAnggota(A *tabAnggota, n *int) {
 }
 
 func cetakDataAnggota(A tabAnggota, n int) {
+	/*
+	IS. A berisi data anggota dan n menyatakan banyaknya data.
+	FS. Seluruh data anggota ditampilkan ke layar.
+	*/
+
 	var i int
 
 	if isEmpty(n) {
@@ -623,6 +782,11 @@ func cetakDataAnggota(A tabAnggota, n int) {
 }
 
 func ubahAnggota(A *tabAnggota, n int) {
+	/*
+	IS. A berisi data anggota dan n menyatakan banyaknya data.
+	FS. Data anggota dengan ID yang dipilih diperbarui.
+	*/
+
 	var id, idx int
 
 	if isEmpty(n) {
@@ -649,6 +813,11 @@ func ubahAnggota(A *tabAnggota, n int) {
 }
 
 func hapusAnggota(A *tabAnggota, n *int) {
+	/*
+	IS. A berisi data anggota dan n menyatakan banyaknya data.
+	FS. Data anggota dengan ID yang dipilih dihapus dari array.
+	*/
+
 	var id, idx, i int
 
 	if isEmpty(*n) {
@@ -672,6 +841,11 @@ func hapusAnggota(A *tabAnggota, n *int) {
 }
 
 func menuPeminjaman() {
+	/*
+	IS. Pengguna berada pada menu peminjaman buku.
+	FS. Menu peminjaman buku ditampilkan ke layar.
+	*/
+
 	fmt.Println("\n===================================================")
 	fmt.Println("|                  PEMINJAMAN BUKU                |")
 	fmt.Println("===================================================")
@@ -684,6 +858,11 @@ func menuPeminjaman() {
 }
 
 func menuPeminjamanBuku(P *tabPeminjaman, nPinjam *int, B *tabBuku, nBuku *int, A *tabAnggota, nAnggota int) {
+	/*
+	IS. P, B, dan A berisi data peminjaman, buku, serta anggota.
+	FS. Pengguna dapat melakukan operasi peminjaman buku.
+	*/
+
 	var pilihan int
 	pilihan = -1
 
@@ -710,6 +889,11 @@ func menuPeminjamanBuku(P *tabPeminjaman, nPinjam *int, B *tabBuku, nBuku *int, 
 }
 
 func pinjamBuku(P *tabPeminjaman, nPinjam *int, B *tabBuku, nBuku int, A *tabAnggota, nAnggota int) {
+	/*
+	IS. P, B, dan A berisi data peminjaman, buku, serta anggota.
+	FS. Transaksi peminjaman baru ditambahkan dan stok buku berkurang.
+	*/
+
 	var idA, idB, idxBuku, idxAnggota int
 
 	if isFull(*nPinjam) {
@@ -742,6 +926,12 @@ func pinjamBuku(P *tabPeminjaman, nPinjam *int, B *tabBuku, nBuku int, A *tabAng
 					fmt.Print("Lama Hari Pinjam    : ")
 					fmt.Scan(&P[*nPinjam].LamaHari)
 
+					for P[*nPinjam].LamaHari <= 0 {
+						fmt.Println("Lama peminjaman harus lebih dari 0 hari.")
+						fmt.Print("Masukkan ulang lama hari: ")
+						fmt.Scan(&P[*nPinjam].LamaHari)
+					}
+
 					B[idxBuku].Stok--
 					*nPinjam++
 
@@ -753,6 +943,11 @@ func pinjamBuku(P *tabPeminjaman, nPinjam *int, B *tabBuku, nBuku int, A *tabAng
 }
 
 func cetakPeminjaman(A tabPeminjaman, n int) {
+	/*
+	IS. A berisi data peminjaman dan n menyatakan banyaknya data.
+	FS. Seluruh data peminjaman ditampilkan ke layar.
+	*/
+
 	var i int
 
 	if isEmpty(n) {
@@ -770,6 +965,11 @@ func cetakPeminjaman(A tabPeminjaman, n int) {
 }
 
 func kembalikanBuku(P *tabPeminjaman, nPinjam *int, B *tabBuku, nBuku int) {
+	/*
+	IS. P berisi data peminjaman dan B berisi data buku.
+	FS. Data peminjaman dihapus dan stok buku bertambah.
+	*/
+
 	var idTrans, idxTrans, idxBuku, i int
 
 	if isEmpty(*nPinjam) {
@@ -800,6 +1000,11 @@ func kembalikanBuku(P *tabPeminjaman, nPinjam *int, B *tabBuku, nBuku int) {
 }
 
 func perpanjangPinjam(P *tabPeminjaman, n int) {
+	/*
+	IS. P berisi data peminjaman dan n menyatakan banyaknya data.
+	FS. Lama hari peminjaman diperbarui.
+	*/
+
 	var idTrans, tambahan, idx int
 
 	if isEmpty(n) {
@@ -815,6 +1020,13 @@ func perpanjangPinjam(P *tabPeminjaman, n int) {
 		} else {
 			fmt.Print("Masukkan jumlah hari perpanjangan: ")
 			fmt.Scan(&tambahan)
+
+			for tambahan <= 0 {
+				fmt.Println("Jumlah hari harus lebih dari 0.")
+				fmt.Print("Masukkan ulang: ")
+				fmt.Scan(&tambahan)
+			}
+
 			P[idx].LamaHari += tambahan
 			fmt.Println("\nDurasi peminjaman berhasil diperpanjang.")
 		}
@@ -822,6 +1034,11 @@ func perpanjangPinjam(P *tabPeminjaman, n int) {
 }
 
 func lebihKecil(b1, b2 Buku, kriteria int, asc bool) bool {
+	/*
+	Fungsi menerima dua data buku, kriteria, dan arah pengurutan.
+	Mengembalikan true jika b1 lebih kecil dari b2 sesuai kriteria.
+	*/
+
 	var kondisi bool
 
 	if kriteria == 1 {
@@ -848,6 +1065,11 @@ func lebihKecil(b1, b2 Buku, kriteria int, asc bool) bool {
 }
 
 func selectionSortBuku(A *tabBuku, n int, kriteria int, asc bool) {
+	/*
+	IS. A berisi data buku dan n menyatakan banyaknya data.
+	FS. Data buku diurutkan sesuai kriteria dan arah pengurutan.
+	*/
+
 	var i, j, idx int
 	var temp Buku
 
@@ -865,6 +1087,11 @@ func selectionSortBuku(A *tabBuku, n int, kriteria int, asc bool) {
 }
 
 func insertionSortBuku(A *tabBuku, n int, kriteria int, asc bool) {
+	/*
+	IS. A berisi data buku dan n menyatakan banyaknya data.
+	FS. Data buku diurutkan sesuai kriteria dan arah pengurutan.
+	*/
+
 	var i, pass int
 	var temp Buku
 
@@ -880,6 +1107,11 @@ func insertionSortBuku(A *tabBuku, n int, kriteria int, asc bool) {
 }
 
 func sequentialSearchJudul(A tabBuku, n int, judul string) int {
+	/*
+	Fungsi menerima data buku, banyak data, dan judul yang dicari.
+	Mengembalikan indeks buku jika ditemukan, atau -1 jika tidak ditemukan.
+	*/
+
 	var idx, i int
 	idx = -1
 	i = 0
@@ -893,6 +1125,11 @@ func sequentialSearchJudul(A tabBuku, n int, judul string) int {
 }
 
 func tampilkanStatistik(A tabBuku, nBuku int, nPinjam int, nAnggota int) {
+	/*
+	IS. A berisi data buku serta jumlah buku, peminjaman, dan anggota diketahui.
+	FS. Statistik dan ringkasan data sistem ditampilkan ke layar.
+	*/
+
 	var i, j, k, count int
 	var kategoriUnik [NMAX]string
 	var nKategori int
@@ -944,6 +1181,11 @@ func tampilkanStatistik(A tabBuku, nBuku int, nPinjam int, nAnggota int) {
 }
 
 func totalStok(A tabBuku, n int) int {
+	/*
+	Fungsi menerima data buku dan banyaknya data.
+	Mengembalikan total seluruh stok buku.
+	*/
+	
 	if n == 0 {
 		return 0
 	}
@@ -951,9 +1193,19 @@ func totalStok(A tabBuku, n int) int {
 }
 
 func isEmpty(n int) bool {
+	/*
+	Fungsi menerima banyaknya data.
+	Mengembalikan true jika data kosong dan false jika tidak.
+	*/
+
 	return n == 0
 }
 
 func isFull(n int) bool {
+	/*
+	Fungsi menerima banyaknya data.
+	Mengembalikan true jika data penuh dan false jika tidak.
+	*/
+
 	return n >= NMAX
 }
